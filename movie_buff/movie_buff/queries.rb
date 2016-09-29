@@ -23,20 +23,27 @@
 
 def movie_names_before_1940
   # Find all the movies made before 1940. Show the id, title, and year.
-  # Movie.all.select(:id, :title, :yr).where('yr < 1940')
+  Movie.all
+    .select(:id, :title, :yr)
+    .where('yr < 1940')
 end
 
 def eighties_b_movies
 	# List all the movies from 1980-1989 with scores falling between 3 and 5 (inclusive). Show the id, title, year, and score.
-  # Movie.all.select(:id, :title, :yr, :score).where('yr BETWEEN 1980 AND 1989').where('score BETWEEN 3 AND 5')
+  Movie.all
+    .select(:id, :title, :yr, :score)
+    .where('yr BETWEEN 1980 AND 1989')
+    .where('score BETWEEN 3 AND 5')
 end
 
 def vanity_projects
   # List the title of all movies in which the director also appeared as the starring actor. Show the movie id and title and director's name.
 
   # Note: Directors appear in the 'actors' table.
-
-
+  Movie.all
+    .select("movies.id, movies.title, actors.name")
+    .joins(:actors)
+    .where("castings.ord = 1 AND movies.director_id = castings.actor_id")
 end
 
 def starring(whazzername)
@@ -45,6 +52,10 @@ def starring(whazzername)
 
 	# ex. "Sylvester Stallone" is like "sylvester" and "lester stone" but not like "stallone sylvester" or "zylvester ztallone"
 
+  #not querying database and returning empty array
+  Movie.all
+    .joins(:actors)
+    .where("actors.name LIKE ?", whazzername)
 end
 
 def bad_years
